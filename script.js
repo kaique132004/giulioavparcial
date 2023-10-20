@@ -1,14 +1,27 @@
+const btnCriarJogo = document.getElementById("btnCriarJogo");
+const entrada = document.getElementById("entrada");
+const btnEnviarPalpite = document.getElementById("btnEnviarPalpite");
+const saida = document.getElementById("saida");
+const palpites = document.getElementById("palpites");
+const radioButtons = document.querySelectorAll('input[name="dificuldade"]');
 
-const dificuldade = document.getElementById("dificuldade")
-const btnCriarJogo = document.getElementById("btnCriarJogo")
-btnCriarJogo.addEventListener('click', ajustaDificuldade());
+let maxTentativas;
+let numSecreto;
+let tentativas;
+let numerosDigitados = [];
 
-
-let maxTentativas = 0;
-let nivelSelecionado;
+btnCriarJogo.addEventListener('click', ajustaDificuldade);
 
 function ajustaDificuldade() {
-    let nivelSelecionado = dificuldade;
+    let nivelSelecionado;
+
+    for (const radioButton of radioButtons) {
+        if (radioButton.checked) {
+            nivelSelecionado = radioButton.value;
+            break;
+        }
+    }
+
     if (nivelSelecionado === "facil") {
         maxTentativas = 10;
     } else if (nivelSelecionado === "medio") {
@@ -16,58 +29,38 @@ function ajustaDificuldade() {
     } else if (nivelSelecionado === "dificil") {
         maxTentativas = 5;
     }
-}
-if (nivelSelecionado === "Fácil") {
-    maxTentativas = 10;
-} else if (nivelSelecionado === "Médio") {
-    maxTentativas = 7;
-} else if (nivelSelecionado === "Difícil") {
-    maxTentativas = 5;
-}
 
-if (maxTentativas > 0) {
     novoJogo();
-} else {
-    alert("Selecione um nível de dificuldade.");
+    saida.innerText = "Jogo iniciado";
 }
-
-
-let numSecreto;
-let tentativas;
 
 function novoJogo() {
-    tentativas = 0;
+    numerosDigitados = [];
+    tentativas = 1;
     numSecreto = Math.floor(Math.random() * 100);
+    console.log(numSecreto)
 }
 
-novoJogo();
-
-let numerosDigitados = [];
-
-const entrada = document.getElementById("entrada");
-const btnEnviarPalpite = document.getElementById("btnEnviarPalpite");
-const saida = document.getElementById("saida");
-avaliaPalpite = () => {
-    
+function avaliaPalpite() {
     if (entrada.value == numSecreto) {
         numerosDigitados.push(entrada.value);
-        saida.innerText = `Parabéns você acertou o numero secreto que é ${numSecreto} em ${tentativas} tentativas.`;
+        saida.innerText = `Parabéns você acertou o número secreto que é ${numSecreto} em ${tentativas} tentativas. \n os números digitados foram ${numerosDigitados}`;
     } else if (entrada.value < numSecreto) {
         numerosDigitados.push(entrada.value);
-        saida.innerText = `Você errou o numero secreto é maior que ${entrada.value}.`;
+        saida.innerText = `Você errou, o número secreto é maior que ${entrada.value}.`;
         tentativas++;
-    }
-    else if (entrada.value > numSecreto) {
+    } else if (entrada.value > numSecreto) {
         numerosDigitados.push(entrada.value);
-        saida.innerText = `Você errou o numero secreto é menor que ${entrada.value}.`;
+        saida.innerText = `Você errou, o número secreto é menor que ${entrada.value}.`;
         tentativas++;
     }
 }
 
 btnEnviarPalpite.addEventListener("click", function () {
-    avaliaPalpite();
+    if (tentativas < maxTentativas) {
+        avaliaPalpite();
+    } else {
+        saida.innerText = `Você já usou todas as tentativas. Inicie um novo jogo.`;
+    }
 });
-
-let palpites = document.getElementById("palpites");
-palpites = innerText = `Você digitou os seguintes números: ${numerosDigitados} em ${tentativas} tentativas.`;
 
